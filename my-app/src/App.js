@@ -1,20 +1,39 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Main from './main.js';
-import Map from './map.js';
-import './main.css';
+// src/App.js
+import React from "react";
+import LoginForm from "./components/LoginForm";
+import SignupForm from "./components/SignupForm";
+import ProfileBox from "./components/ProfileBox";
+import { useAuth } from "./context/AuthContext";
 
-//import Chatbot from './chatbot.js';
+function Home() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="p-6">로딩 중…</div>;
 
-function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Main />} /> {/* 기본 경로 localhost:3000까지*/}
-        <Route path="/Main" element={<Main />} /> {/* /Main 도 가능 여기는 localhost:3000/Main  */}
-        <Route path="/Map" element={<Map />} />
-      </Routes>
-    </Router>
+    <div className="max-w-3xl mx-auto p-6 space-y-8">
+      <h1 className="text-2xl font-bold">Auth Demo (세션 쿠키)</h1>
+      <section className="grid md:grid-cols-2 gap-6">
+        <div className="rounded-2xl border p-4 space-y-4">
+          <div className="font-semibold">로그인</div>
+          <LoginForm />
+        </div>
+        <div className="rounded-2xl border p-4 space-y-4">
+          <div className="font-semibold">회원가입 + 이메일 인증</div>
+          <SignupForm />
+        </div>
+      </section>
+      <section>
+        <ProfileBox />
+        {user ? (
+          <div className="text-sm text-green-700 mt-2">로그인됨: {user.user_id}</div>
+        ) : (
+          <div className="text-sm text-gray-600 mt-2">로그인 후 /me 접근 가능</div>
+        )}
+      </section>
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  return <Home />;
+}
